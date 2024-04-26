@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="shortcut icon" href="cloud.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Cambria Math',Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: rgb(91,199,231);
+     background: linear-gradient(0deg, rgba(91,199,231,1) 0%, rgba(52,97,221,1) 100%);
+      background-size:cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+
+    }
+    h1{
+      margin-top: 10px;
+      font-size: 40px;
+    }
+    label{
+      font-size: 25px;
+    }
+    input{
+      font-size: 20px;
+      border-radius: 5px;
+      
+
+    }
+    button{
+      display: inline-block;
+      margin-top: 40px;
+      font-size: 20px;
+      background-color: black;
+      color: white;
+      border-radius: 20px ;
+      border: 1px solid black;
+      padding: 10px 20px;
+      transition:all 0.3s linear 0s;
+       
+      
+   }
+
+   button:hover{
+    background-color: rgb(52, 48, 48);
+    transform:scale(1.1) ;
+   }
+
+    #weather-container {
+      color: rgb(1, 6, 11);
+      text-align: center;
+      background-color: transparent;
+      padding:80px;
+      border-radius: 30px;
+      box-shadow: 0 6px 8px rgba(1, 2, 2, 0.8);
+    }
+
+    #loading {
+      display: none;
+      margin-top: 20px;
+      color: rgb(8, 120, 8);
+      font-size: 20px;
+    }
+
+    #error {
+      color: rgb(201, 13, 13);
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    #weather-info{
+
+      font-size: 20px;
+
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div id="weather-container">
+    <h1>Weather App</h1>
+    <div>
+      <label for="location"><b>Enter Location: </b></label>
+
+      <input type="text" id="location" placeholder="City,State,Country...">
+      <br>
+      <button onclick="getWeather()" class="btn btn-secondary" ><b>Get Weather</b></button>
+    </div>
+    <div id="loading">Loading...</div>
+    <div id="error"></div>
+    <div id="weather-info"></div>
+  </div>
+  <div>
+
+  </div>
+
+
+  <script>
+    async function getWeather() {
+      const locationInput = document.getElementById('location');
+      const location = locationInput.value;
+
+      
+      if (location.trim() === '') {
+        document.getElementById('error').innerText = 'Please enter the location.';
+        return;
+      }
+
+      
+      document.getElementById('error').innerText = '';
+      document.getElementById('weather-info').innerText = '';
+
+      
+      document.getElementById('loading').style.display = 'block';
+
+      
+      const apiKey = '15886c8d02dc840586a49733d0974831';
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (response.ok) {
+          
+          document.getElementById('weather-info').innerText = `
+            ${data.name}, ${data.sys.country}
+            \nTemperature: ${data.main.temp}°C
+            \nCondition: ${data.weather[0].description}
+          `;
+        } else {
+          
+          document.getElementById('error').innerText = `Error: ${data.message}`;
+        }
+      } catch (error) {
+        
+        document.getElementById('error').innerText = 'An error occurred while fetching data.';
+      } finally {
+        // Hide loading message
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+    
+  </script>
+
+</body>
+</html>
